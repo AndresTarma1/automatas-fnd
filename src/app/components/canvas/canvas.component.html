@@ -1,0 +1,37 @@
+<div class="container">
+  <div class="botones">
+    
+    <button mat-flat-button (click)="addNode()">
+      Añadir Estado
+    </button>
+  
+    <button mat-flat-button (click)="automataQuintupla()">
+      @if(quintupla){
+        Eliminar Quintuple
+      }@else {
+        Calcular Quíntuple
+      }
+    </button>
+
+  </div>
+
+  
+  <div id="diagramDiv" #diagramDiv></div>
+
+  <div class="table-transicion">
+    @if (quintupla) {
+      <app-table-transition [quintupla]="quintupla"></app-table-transition>
+    }
+  </div>
+
+  <div class="quintuple">
+    @if (quintupla) {
+      <h3>Quíntupla</h3>
+      <p>Q: {{quintupla.estados}}</p>
+      <p>Σ: {{quintupla.alfabeto}}</p>
+      <p>q0: {{quintupla.inicial}}</p>
+      <p>F: {{quintupla.final}}</p>
+      <p>δ</p>
+    }
+  </div>
+</div>

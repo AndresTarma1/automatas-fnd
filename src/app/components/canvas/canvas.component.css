@@ -1,0 +1,24 @@
+
+.container{
+  padding: 20px;
+}
+
+#diagramDiv {
+  width: 100%; 
+  height: 500px; 
+  background-color: white;
+  opacity: 0.4;
+  border-radius: 5px;
+  border: 2px solid white;
+}
+
+.botones{
+  padding-bottom: 20px;
+  display: flex;
+  column-gap: 20px;
+}
+
+
+.quintuple{
+  color: white;
+}
