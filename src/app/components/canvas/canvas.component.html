@@ -13,6 +13,11 @@
       }
     </button>
 
+    @if(quintupla){
+      <input type="text" name="cadena" id="cadena" #stringInput>
+      <button mat-flat-button (click)="verificarCadena(stringInput.value)">Verificar Cadena</button>
+    }
+
   </div>
 
   

@@ -15,6 +15,7 @@ import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/d
   styleUrl: './canvas.component.css'
 })
 export class CanvasComponent implements OnInit {
+
   @ViewChild('diagramDiv', {static: true}) diagramDiv!: ElementRef<HTMLDivElement>;
 
   diagram!: go.Diagram;
@@ -195,9 +196,14 @@ export class CanvasComponent implements OnInit {
     }
     this.quintupla = this.automataService.quintupla(model);
   }
-  
 
+  verificarCadena(cadena: string) {
+    let model = this.diagram.model as unknown as GraphLinksModel;
+    let valido: boolean = this.automataService.stringEval(cadena, model);
 
+    alert(valido ? "Cadena aceptada" : "Cadena no aceptada");
+
+  }
 }
 
 @Component({
