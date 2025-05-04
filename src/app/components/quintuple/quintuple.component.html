@@ -1,0 +1,34 @@
+<div [ngClass]="{'border-container' : quintupla()}"  class="container">
+    @if (quintupla()) {
+        <h3 class="context">
+            Quintupla del automata
+        </h3>
+        
+        <div class="content">
+            <div>
+                <h3 class="font-text">Q = &#123; {{ quintupla()?.estados }} &#125; </h3>
+                <p class="text-muted">Conjunto de estados </p>
+            </div>
+            <div>
+                <h3 class="font-text">Σ = &#123; {{ quintupla()?.alfabeto }} &#125; </h3>
+                <p class="text-muted">Alfabeto </p>
+            </div>
+            <div>
+                <h3 class="font-text">δ: Q x Σ → Q</h3>
+                <p class="text-muted">Funcion de transicion. (Ver tabla) </p>
+            </div>
+            <div>
+                <h3 class="font-text">q₀ = &#123; {{ quintupla()?.inicial }} &#125; </h3>
+                <p class="text-muted">Estado inicial </p>
+            </div>
+            <div>
+                <h3 class="font-text">F = &#123; {{ quintupla()?.final }} &#125; </h3>
+                <p class="text-muted">Estados finales </p>
+            </div>
+        </div>
+    }@else {
+        <div class="no-quintupla">
+            Debes crear la quintupla primero para poder visualizarla
+        </div>   
+    }
+</div>

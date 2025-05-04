@@ -1,4 +1,4 @@
-import { Component, Input, input, InputSignal, OnInit } from '@angular/core';
+import { Component, effect, Input, input, InputSignal, OnInit } from '@angular/core';
 import { LinkData, Quintupla } from '../../Interfaces/interfaces.interface';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class TableTransitionComponent implements OnInit {
 
-  quintupla: InputSignal<Quintupla | undefined> = input<Quintupla>();
+  quintupla = input<Quintupla| null>();
 
   estados: string[] = [];
   alfabeto: string[] = [];
@@ -19,7 +19,18 @@ export class TableTransitionComponent implements OnInit {
   dataSource: any= []; // Use any[] for simplicity
   Columnas: string[] = []; // Start with 'estado'
 
+  constructor(){
+    effect( () => {
+      this.dataSource = [];
+      this.modifyTable();
+    })
+  }
   ngOnInit(): void {
+
+    
+  }
+
+  modifyTable() {
     if (this.quintupla()) {
       this.estados = this.quintupla()!.estados;
       this.alfabeto = this.quintupla()!.alfabeto;

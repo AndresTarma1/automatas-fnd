@@ -1,42 +1,57 @@
 <div class="container">
-  <div class="botones">
-    
-    <button mat-flat-button (click)="addNode()">
-      Añadir Estado
-    </button>
-  
-    <button mat-flat-button (click)="automataQuintupla()">
-      @if(quintupla){
-        Eliminar Quintuple
+
+  <div class="top">
+    <div class="botones">
+      <button mat-stroked-button extended (click)="addNode()">
+        <mat-icon>add</mat-icon>
+        Añadir Estado
+      </button>
+      @if(quintupla() != null){
+        <button mat-stroked-button extended (click)="automataQuintupla()">
+          <mat-icon>delete</mat-icon>
+          Eliminar quíntupla
+        </button>
       }@else {
-        Calcular Quíntuple
+        <button mat-stroked-button extended [disabled]="" (click)="automataQuintupla()">
+          <mat-icon>check</mat-icon>
+          Calcular quíntupla
+        </button>
       }
-    </button>
+    </div>
+  </div>
 
-    @if(quintupla){
-      <input type="text" name="cadena" id="cadena" #stringInput>
-      <button mat-flat-button (click)="verificarCadena(stringInput.value)">Verificar Cadena</button>
-    }
+  <div class="center">
+    <div class="diagram-container">
+      <div id="diagramDiv" #diagramDiv></div>
+
+      <div class="properties-diagram">
+        <h3 align="center">Propiedades del automata</h3>
+        <div class="properties">
+          <div *ngIf="diagramaData" class="title-propertie">Nodos: {{ diagramaData.nodeDataArray ? diagramaData.nodeDataArray.length : 0 }}</div>
+          @if(diagramaData){
+            <div class="estados-agrupados">
+              @for (estado of diagramaData.nodeDataArray; track $index) {
+                <span>{{ estado["key"] }}{{ $last ? '' : ', ' }}</span>
+              }         
+            </div>
+          }
+
+          <div *ngIf="diagramaData" class="title-propertie">Transiciones: {{ diagramaData.linkDataArray ? diagramaData.linkDataArray.length : 0 }}</div>
+          @if(diagramaData){
+            <div class="transiciones">
+              <mat-list role="list">
+                @for (transicion of diagramaData.linkDataArray; track $index) {
+                  <mat-list-item role="listitem">
+                    <span>{{ transicion["from"] }} --( {{ transicion["text"] }} )-> {{ transicion["to"] }}</span>
+                  </mat-list-item>
+                }
+              </mat-list>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
 
   </div>
 
-  
-  <div id="diagramDiv" #diagramDiv></div>
-
-  <div class="table-transicion">
-    @if (quintupla) {
-      <app-table-transition [quintupla]="quintupla"></app-table-transition>
-    }
-  </div>
-
-  <div class="quintuple">
-    @if (quintupla) {
-      <h3>Quíntupla</h3>
-      <p>Q: {{quintupla.estados}}</p>
-      <p>Σ: {{quintupla.alfabeto}}</p>
-      <p>q0: {{quintupla.inicial}}</p>
-      <p>F: {{quintupla.final}}</p>
-      <p>δ</p>
-    }
-  </div>
 </div>

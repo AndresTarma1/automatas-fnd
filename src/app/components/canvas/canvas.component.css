@@ -1,24 +1,82 @@
+.container {
+  padding: 10px;
+  display: flex; /* Para organizar el diagrama y la quíntupla en filas o columnas */
+  flex-direction: column; /* Por defecto, los elementos se apilan verticalmente */
+}
 
-.container{
-  padding: 20px;
+.botones {
+  padding-bottom: 10px;
+  display: flex;
+  column-gap: 20px;
+  margin-bottom: 20px; /* Añade espacio debajo de los botones */
+}
+
+.diagram-container {
+  display: flex; /* Para poner el diagrama y la quíntupla uno al lado del otro */
+  gap: 30px; /* Espacio entre el diagrama y la quíntupla */
+  margin-bottom: 20px; /* Espacio debajo del contenedor del diagrama y la quíntupla */
+  align-items: flex-start; /* Alinea los elementos al inicio del contenedor */
 }
 
 #diagramDiv {
-  width: 100%; 
-  height: 500px; 
+  width: 50%; /* Ocupa más espacio */
+  height: 500px;
   background-color: white;
-  opacity: 0.4;
   border-radius: 5px;
-  border: 2px solid white;
-}
-
-.botones{
-  padding-bottom: 20px;
-  display: flex;
-  column-gap: 20px;
+  border: 1px solid black;
+  flex-grow: 1; /* Permite que el diagrama crezca para ocupar el espacio disponible */
 }
 
 
-.quintuple{
-  color: white;
+.properties-diagram {
+  width: 20%; /* Ajusta el ancho según necesites */
+  height: auto; /* Permite que la altura se ajuste al contenido */
+  background-color: white;
+  border-radius: 5px;
+  border: 2px solid #00000088;
+  /* flex-grow: 1;  Si está dentro de un flex container y quieres que crezca */
+  padding: 10px; /* Añade un poco de espacio interno */
+  box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+}
+
+.properties-diagram h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.properties {
+  margin-left: 5px; /* Puedes ajustar este margen */
+}
+
+.title-propertie {
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.estados-agrupados {
+  font-size: 0.9em;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.estados-agrupados span {
+  padding-right: 5px;
+}
+
+
+mat-list {
+  padding: 0; /* Elimina el padding por defecto de la lista */
+}
+
+mat-list-item {
+  height: auto !important; /* Permite que la altura se ajuste al contenido */
+  padding: 5px 0; /* Ajusta el padding vertical para cada item */
+  word-break: break-word; /* Evita que las transiciones largas rompan el diseño */
+}
+
+mat-list-item span {
+  font-size: 0.9em;
+  color: #333;
 }

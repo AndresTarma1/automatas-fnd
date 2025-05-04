@@ -1,6 +1,16 @@
 <mat-toolbar>
     <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home"></mat-icon>
-    <span style="margin-left: 25px;">Automatas Finitos Deterministas</span>
+    <h3 style="margin-left: 25px;">Automatas Finitos Deterministas</h3>
 </mat-toolbar>
 <mat-divider></mat-divider>
-<app-canvas></app-canvas>
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" dynamicHeight>
+    <mat-tab label="Diseño">
+            <app-canvas (outputQuintupla)="obtenerQuintupla($event)" ></app-canvas>
+    </mat-tab>
+    <mat-tab label="Quintupla">
+        <app-quintuple [quintupla]="quintupla()" ></app-quintuple>
+    </mat-tab>
+    <mat-tab label="Tabla de transicion">
+        <app-table-transition [quintupla]="quintupla()"></app-table-transition>
+    </mat-tab>
+</mat-tab-group>

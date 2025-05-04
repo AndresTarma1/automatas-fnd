@@ -1,5 +1,5 @@
-import { JsonPipe } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, JsonPipe } from '@angular/common';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, model, OnInit, output, Sanitizer, Signal, signal, ViewChild, WritableSignal } from '@angular/core';
 import * as go from "gojs";
 import { AutomataService } from '../../core/automata.service';
 import { GraphLinksModel, Quintupla, automataData } from '../../Interfaces/interfaces.interface';
@@ -7,29 +7,49 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import { TableTransitionComponent } from '../table-transition/table-transition.component';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {  MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-canvas',
-  imports: [MatButtonModule, MatInputModule, TableTransitionComponent, MatDialogModule],
+  imports: [MatButtonModule, MatInputModule, MatDialogModule, MatIconModule,  CommonModule, MatListModule],
   templateUrl: './canvas.component.html',
   styleUrl: './canvas.component.css'
 })
-export class CanvasComponent implements OnInit {
+export class CanvasComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('diagramDiv', {static: true}) diagramDiv!: ElementRef<HTMLDivElement>;
+  @ViewChild('diagramDiv') diagramDiv!: ElementRef<HTMLDivElement>;
 
   diagram!: go.Diagram;
   automataService: AutomataService = inject(AutomataService);
-  quintupla: Quintupla | null = null; 
+  quintupla: WritableSignal<Quintupla | null> = signal(null);
+  diagramaData: go.GraphLinksModel | null = null ;
+  outputQuintupla = output<Quintupla| null>();
+  private _snackBar = inject(MatSnackBar);
+
+  openSnackBar(message: string, action: string = "Okay") {
+    return  this._snackBar.open(message, action, { duration: 2000 });
+  }
+
+  constructor() {
+  }
 
   ngOnInit() {
-    this.initializeDiagram();
+  }
+
+  ngAfterViewInit() {
+    this.diagram = this.initializeDiagram();
+
+    this.diagramaData = this.diagram.model as go.GraphLinksModel
   }
 
 
-  initializeDiagram(): void {
+
+  initializeDiagram(): go.Diagram{
     
-    this.diagram = new go.Diagram(this.diagramDiv.nativeElement, {"undoManager.isEnabled": true});
+    let diagram = new go.Diagram(this.diagramDiv.nativeElement, {"undoManager.isEnabled": true});
+    diagram.allowCopy = false;
 
     const nodeContextMenu = 
     go.GraphObject.build("ContextMenu")
@@ -55,26 +75,20 @@ export class CanvasComponent implements OnInit {
       )
 
       // Configuracion basica del diagrama
-      this.diagram.nodeTemplate = new go.Node("Auto", { contextMenu: nodeContextMenu })
+      diagram.nodeTemplate = new go.Node(
+        go.Panel.Spot , 
+        { 
+          contextMenu: nodeContextMenu,
+        })
       .add(
         new go.Panel("Spot") // Usamos un Panel Spot para superponer las formas
           .add(
-            // Círculo interno secundario (estado final, solo si "isLast" es true)
-            new go.Shape("Circle", {
-              width: 50, // Tamaño menor para que esté dentro
-              height: 50,
-              stroke: "black",
-              strokeWidth: 1,
-              opacity: 0.5,
-              fill: null // Sin relleno
-            }).bind("visible", "isLast"), // Visible solo si "isLast" es true
-    
+
             // Círculo interno principal (siempre visible)
             new go.Shape("Circle", {
               width: 60,
               height: 60,
               stroke: "black",
-              fill: null,
               portId: "",
               cursor: "pointer",
               fromLinkable: true,
@@ -82,18 +96,35 @@ export class CanvasComponent implements OnInit {
               fromLinkableSelfNode: true,
               toLinkable: true,
               toLinkableSelfNode: true,
+              toLinkableDuplicates: true,
               opacity: 0.5,
             }).bind("fill", "isFirst", (isFirst: boolean) => {
-              return isFirst ? "cyan" : null; // Cambia el color según el estado inicial
+              return isFirst ? "cyan" : 'white'; // Cambia el color según el estado inicial
             }),
+
+            // Círculo interno secundario (estado final, solo si "isLast" es true)
+            new go.Shape("Circle", {
+              width: 50, // Tamaño menor para que esté dentro
+              height: 50,
+              stroke: "black",
+              strokeWidth: 1,
+              opacity: 0.5,
+              cursor: "null",
+              pickable: false,
+              mouseEnter: null,
+              mouseLeave: null,
+              fill: null // Sin relleno
+            }).bind("visible", "isLast"), // Visible solo si "isLast" es true
+    
+            
     
             // Etiqueta de texto dentro del círculo
-            new go.TextBlock({ margin: 5 })
+            new go.TextBlock({ margin: 5, editable: true})
               .bindTwoWay("text", "label")
-          )
+            )
       );
 
-      this.diagram.linkTemplate = new go.Link({
+      diagram.linkTemplate = new go.Link({
         relinkableFrom: true,
         relinkableTo: true,
       })
@@ -103,27 +134,58 @@ export class CanvasComponent implements OnInit {
         new go.Panel(go.Panel.Auto) // Usamos un Panel.Auto para el fondo del texto
           .add(
             new go.Shape("RoundedRectangle", { fill: "white", stroke: null, opacity: 1 }), // Fondo blanco para el texto
-            new go.TextBlock({ text: 'Input', editable: true, margin: 3 })
-              .bindTwoWay("text")
+            new go.TextBlock(
+              { 
+                editable: true,
+                text: 'ε',
+                margin: 3, 
+                textValidation: (textBlock, oldText, newText) => {
+                  if (newText.length > 1) {
+                    this.openSnackBar("El símbolo no puede tener más de un carácter")
+                    return false;
+                  }
+
+                  if(newText.length == 0) {
+                    this.openSnackBar("El símbolo no puede estar vacío")
+                    return false;
+                  }
+                
+                  return true;
+                },
+              }
+            ).bindTwoWay("text") // Vinculamos el texto al modelo
           )
           .bind(new go.Binding("segmentIndex").ofObject("LINE")) // Aseguramos que el panel esté en la línea
           .bind(new go.Binding("segmentFraction", "labelFraction", (f) => f === undefined ? 0.5 : f)) // Posición a lo largo de la línea
       );
+
+      return diagram;
   }
 
 
+
   addNode(): void {
-    const newNodeKey = `q${this.diagram.model.nodeDataArray.length}`; // Generar un ID único para el nodo
+    
+    const lastNode = this.diagram.model.nodeDataArray[this.diagram.model.nodeDataArray.length - 1]; 
+    const lastNodeKey = lastNode ? lastNode["key"] : null; 
+    const number = lastNodeKey ? parseInt(lastNodeKey.substring(1)) : 0; 
+    let newNodeKey; 
+
+    if(lastNodeKey){
+      newNodeKey = `q${number + 1}`; 
+    }else{
+      newNodeKey = `q0`;
+    }
+
     const newNode = {
-      key: newNodeKey,
       label: `${newNodeKey}`,
-      x: 100, // Posición inicial en X
-      y: 100,  // Posición inicial en Y,
+      key: newNodeKey,
+      x: 100,
+      y: 100,
       isFirst: false,
       isLast: false,
     };
-
-
+    
     this.diagram.model.addNodeData(newNode);
   }
 
@@ -161,40 +223,37 @@ export class CanvasComponent implements OnInit {
   dialog = inject(MatDialog);
   automataQuintupla(): void {
 
-    if(this.quintupla){
-      this.quintupla = null;
+    if(this.quintupla()){
+      this.quintupla.set(null);
+      this.outputQuintupla.emit(null);
       return
     }
 
-    
     const model = this.diagram.model as unknown as GraphLinksModel;
     
     if(model.nodeDataArray.length == 0){
-      this.dialog.open(DialogData, {
-        data: {
-          message: `No se puede guardar el autómata, ya que no hay nodos`,
-          title: "Error",
-          buttonText: "Aceptar",
-        },
-      });
-      
+
+      this._snackBar.open("No se puede guardar el autómata, ya que no hay nodos", "Aceptar");
       return;
     }
+
+    if(!model.nodeDataArray.find( (n: automataData) => n.isFirst == true)){
+      this._snackBar.open("No se puede guardar el autómata, ya que no hay un estado inicial", "Aceptar");
+      return;
+    }
+
     
     for(let transicion of model.linkDataArray){
       if(transicion.text == "" || transicion.text == null){
-        this.dialog.open(DialogData, {
-          data: {
-            message: `No se puede guardar el autómata, ya que del estado ${transicion.from} al estado ${transicion.to} no hay un símbolo definido`,
-            title: "Error",
-            buttonText: "Aceptar",
-          },
-        });
+
+        this._snackBar.open("No se puede guardar el autómata, ya que hay transiciones sin símbolo", "Aceptar");
         return;
       }
       
     }
-    this.quintupla = this.automataService.quintupla(model);
+    this.quintupla.set(this.automataService.quintupla(model));
+
+    this.outputQuintupla.emit(this.quintupla());
   }
 
   verificarCadena(cadena: string) {

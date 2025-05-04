@@ -1,21 +1,33 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-  <!-- Position Column -->
-  <ng-container matColumnDef="estado">
-    <th mat-header-cell *matHeaderCellDef>Estado</th>
-    <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
-  </ng-container>
-
-  <!-- Name Column -->
-
-  @for (alphabet of alfabeto; track $index) {
-    <ng-container matColumnDef={{alphabet}}>
-      <th mat-header-cell *matHeaderCellDef> {{ alphabet}} </th>
-      <td mat-cell *matCellDef="let element"> {{ element[alphabet] }} </td>
-    </ng-container>
+<div [ngClass]="{'border-container' : quintupla()}" class="container">
+  @if (quintupla()) {
+    
+    <h3 class="context">
+      Tabla de transiciones del automata
+    </h3>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      
+      <!-- Position Column -->
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+      </ng-container>
+      
+      <!-- Name Column -->
+      
+      @for (alphabet of alfabeto; track $index) {
+        <ng-container matColumnDef={{alphabet}}>
+          <th mat-header-cell *matHeaderCellDef> {{ alphabet}} </th>
+          <td mat-cell *matCellDef="let element"> {{ element[alphabet] }} </td>
+        </ng-container>
+      }
+  
+      <tr mat-header-row *matHeaderRowDef="Columnas"></tr>
+      <tr mat-row *matRowDef="let row; columns: Columnas;"></tr>
+    </table>
+  }@else {
+    <div class="no-quintupla">
+      Debes crear la quintupla primero para poder visualizarla
+    </div>
   }
-
-  <tr mat-header-row *matHeaderRowDef="Columnas"></tr>
-  <tr mat-row *matRowDef="let row; columns: Columnas;"></tr>
-</table>
+</div>
 
