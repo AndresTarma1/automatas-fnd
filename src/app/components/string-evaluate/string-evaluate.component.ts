@@ -46,6 +46,5 @@ export class StringEvaluateComponent implements OnChanges {
     }
     let isValid = this.automataService.stringEvalWithoutModel(cadena, this.quintupla()!);
     this.stringsEvaluated.push({ cadena, isValid });
-    console.log(this.stringsEvaluated);
   }
 }
