@@ -1,0 +1,37 @@
+.container{
+    width: 70%;
+    height: auto;
+    margin: 20px auto 20px 20px;
+}
+
+.border-container{
+    border: 2px solid #cebfbfbc;
+    border-radius: 5px;
+}
+.context{
+    font-size: 25px;
+    padding: 20px 20px;
+    color: #09090B;
+    text-align: left;
+    margin: 0;
+}
+
+.no-quintupla{
+    font-size: 20px;
+    padding: 20px 20px;
+    color: black;
+    opacity: 0.6;
+    text-align: center;
+}
+
+.evaluater{
+    display: grid;
+    grid-template-columns: 8fr 2fr;
+    padding: 0 20px;
+    gap: 20px;
+}
+
+.button-validate{
+    margin-top: auto;
+    margin-bottom: 20px;
+}

@@ -1,0 +1,46 @@
+<div [ngClass]="{'border-container' : quintupla()}" class="container">
+    @if (quintupla()) {
+      
+      <h3 class="context">Evaluador de cadenas</h3>
+  
+      <!-- Input y Botón -->
+
+      <div class="evaluater">
+
+          <mat-form-field appearance="outline" >
+            <mat-label>Cadena</mat-label>
+            <input matInput #stringEvaluate>
+          </mat-form-field>
+      
+          <button class="button-validate"  mat-stroked-button extended (click)="evaluarCadena(stringEvaluate.value)">Evaluar</button>
+      </div>
+
+      <div class="group-evaluate">
+        <mat-list>
+
+            @for (cadena of stringsEvaluated; track $index) {
+                <mat-list-item>
+
+                    <span matListItemTitle class="evaluate-text">Cadena: {{ cadena.cadena }}</span>
+                    <span matListItemLine class="evaluate-text">Resultado: 
+                        <span matListItemIcon>
+                            @if(cadena.isValid) {
+                                <mat-icon class="mat-18">done</mat-icon>
+                            } @else {
+                                <mat-icon class="mat-18">report_problem</mat-icon>
+                            }
+
+                        </span>
+                    </span>
+                </mat-list-item>
+            }
+        </mat-list>
+      </div>
+  
+    } @else {
+      <div class="no-quintupla">
+        Debes crear la quintupla primero para poder visualizarla.
+      </div>
+    }
+  </div>
+  

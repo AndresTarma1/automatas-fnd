@@ -140,6 +140,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
                 text: 'ε',
                 margin: 3, 
                 textValidation: (textBlock, oldText, newText) => {
+                  
                   if (newText.length > 1) {
                     this.openSnackBar("El símbolo no puede tener más de un carácter")
                     return false;
@@ -147,6 +148,20 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
                   if(newText.length == 0) {
                     this.openSnackBar("El símbolo no puede estar vacío")
+                    return false;
+                  }
+
+                  // 📌 Obtener el enlace (`LinkData`) que contiene este `TextBlock`
+                  const linkData = textBlock.part?.data;
+                  if (!linkData) return true;
+
+                  // 📌 Verificar si ya existe una transición con este símbolo desde el mismo estado
+                  const duplicateLink = this.diagramaData?.linkDataArray.some(
+                    (link) => link["from"] === linkData.from && link["text"] === newText && link["to"] !== linkData.to
+                  );
+
+                  if (duplicateLink) {
+                    this.openSnackBar(`Ya existe una transición con '${newText}' desde '${linkData.from}'`);
                     return false;
                   }
                 

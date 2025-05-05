@@ -3,7 +3,7 @@
     <h3 style="margin-left: 25px;">Automatas Finitos Deterministas</h3>
 </mat-toolbar>
 <mat-divider></mat-divider>
-<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" dynamicHeight>
+<mat-tab-group mat-stretch-tabs="false" [selectedIndex]="index()" (selectedIndexChange)="tabChange($event)" mat-align-tabs="start" dynamicHeight>
     <mat-tab label="Diseño">
             <app-canvas (outputQuintupla)="obtenerQuintupla($event)" ></app-canvas>
     </mat-tab>
@@ -12,5 +12,8 @@
     </mat-tab>
     <mat-tab label="Tabla de transicion">
         <app-table-transition [quintupla]="quintupla()"></app-table-transition>
+    </mat-tab>
+    <mat-tab label="Evaluacion de cadenas">
+        <app-string-evaluate [quintupla]="quintupla()" ></app-string-evaluate>
     </mat-tab>
 </mat-tab-group>

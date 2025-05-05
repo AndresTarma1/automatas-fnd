@@ -50,12 +50,16 @@ export class TableTransitionComponent implements OnInit {
   }
 
   obtenerTransicion(estado: string, simbolo: string): string {
-
-    // Busca la transición correspondiente al estado y símbolo
-    const transicion = this.quintupla()?.transiciones.find(
+    // Filtra todas las transiciones que coincidan con el estado y el símbolo
+    const transiciones = this.quintupla()?.transiciones.filter(
       (t) => t.from === estado && t.text === simbolo
     );
-    return transicion ? transicion.to : '-';
+  
+    // Retorna todas las transiciones separadas por comas
+    return transiciones && transiciones.length > 0
+      ? transiciones.map(t => t.to).join(', ')
+      : '-';
   }
+  
   
 }

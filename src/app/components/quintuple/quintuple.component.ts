@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { Quintupla } from '../../Interfaces/interfaces.interface';
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-quintuple',
@@ -15,5 +15,6 @@ export class QuintupleComponent {
   quintupla = input<Quintupla | null>();
 
 
+  
   
 }

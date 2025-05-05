@@ -46,35 +46,66 @@ export class AutomataService {
   }
   
   stringEval(palabra: string, model: GraphLinksModel): boolean {
+
     const { inicial, final, transiciones } = this.quintupla(model);
     let estadoActual = inicial;
-  
+
+
     for (const simbolo of palabra) {
-      let transEncontrada: LinkData | null = null;
-  
-  
-      for (const t of transiciones) {
-        if (t.from === estadoActual && t.text === simbolo) {
-          transEncontrada = t;
-          break;
-        }
+
+      const trans = transiciones.find(t =>
+        t.from === estadoActual &&
+        t.text === simbolo
+      );
+
+      if (trans) {
+
+        estadoActual = trans.to;
       }
-  
-      if (!transEncontrada) return false;
-  
-    
-      estadoActual = transEncontrada.to;
+
     }
-  
-  
-    const esFinalA = final.indexOf(estadoActual) !== -1;
-  
-  
-    const esFinalB = final.some((f: any) => f === estadoActual);
-  
-    return esFinalA;  
+
+
+
+    if( final.includes(estadoActual)){
+
+      return true
+    }else{
+
+      return false
+    }
   }
-  
+
+  stringEvalWithoutModel(palabra: string, quintupla: Quintupla): boolean {
+
+    const { inicial, final, transiciones } = quintupla;
+    let estadoActual = inicial;
+
+
+    for (const simbolo of palabra) {
+
+      const trans = transiciones.find(t =>
+        t.from === estadoActual &&
+        t.text === simbolo
+      );
+
+      if (trans) {
+
+        estadoActual = trans.to;
+      }
+
+    }
+
+
+
+    if( final.includes(estadoActual)){
+
+      return true
+    }else{
+
+      return false
+    }
+  }
   
   
 
