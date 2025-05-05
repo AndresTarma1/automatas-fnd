@@ -119,7 +119,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
             
     
             // Etiqueta de texto dentro del círculo
-            new go.TextBlock({ margin: 5, editable: true})
+            new go.TextBlock({ margin: 5})
               .bindTwoWay("text", "label")
             )
       );
@@ -127,6 +127,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       diagram.linkTemplate = new go.Link({
         relinkableFrom: true,
         relinkableTo: true,
+        selectionAdorned: false
       })
       .add(
         new go.Shape({ strokeWidth: 1, name: 'LINE' , opacity: 0.5 }),
